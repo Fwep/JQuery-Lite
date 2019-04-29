@@ -1,0 +1,21 @@
+{
+  "name": "JQuery-Lite",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --watch --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fwep/JQuery-Lite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fwep/JQuery-Lite/issues"
+  },
+  "homepage": "https://github.com/Fwep/JQuery-Lite#readme"
+}
