@@ -68,6 +68,38 @@ class DOMNodeCollection {
   removeClass(...classNames) {
     this.nodes.forEach(node => node.classList.remove(...classNames));
   }
+
+  children() {
+    let nodeList = [];
+    this.nodes.forEach(node => {
+      Array.from(node.children).forEach(child => nodeList.push(child));
+    });
+
+    return new DOMNodeCollection(nodeList);
+  }
+  
+  parent() {
+    let nodeList = [];
+    this.nodes.forEach(node => {
+      nodeList.push(node.parentNode);
+    });
+  
+    return new DOMNodeCollection(nodeList);
+  }
+
+  find(selector) {
+   let nodeList = [];
+   this.nodes.forEach(node => {
+    let matchedNodes = document.querySelectorAll(selector);
+    nodeList = nodeList.concat(Array.from(matchedNodes));
+   }) 
+
+   return new DOMNodeCollection(nodeList);
+  }
+
+  remove() {
+    this.nodes.forEach(node => node.remove());
+  }
 }
 
 module.exports = DOMNodeCollection;
