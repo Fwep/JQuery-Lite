@@ -38,6 +38,28 @@ class DOMNodeCollection {
         node.innerHTML += String(insNode.outerHTML);
       });
   }
+
+  attr(prop, value) {
+    let first = this.nodes[0];
+    if (typeof prop == 'string') {
+      if (value === undefined) {
+        return first.getAttribute(`${prop}`);
+      } else if (typeof value === 'string' 
+      || typeof value === 'number') {
+        return first.setAttribute(prop, value);
+      } else if (value === null) {
+        return first.removeAttribute(prop);
+      } else if (typeof value === 'function') {
+        return first.setAttribute(prop, value());
+      }
+    } else if (typeof prop == 'object') {
+      console.log(prop);
+      for (let key in prop) {
+        this.attr(String(key), prop[key]);
+        return;
+      }
+    }
+  }
 }
 
 module.exports = DOMNodeCollection;
