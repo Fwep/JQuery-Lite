@@ -60,6 +60,14 @@ class DOMNodeCollection {
       }
     }
   }
+
+  addClass(...classNames) {
+    this.nodes.forEach(node => node.classList.add(...classNames));
+  }
+  
+  removeClass(...classNames) {
+    this.nodes.forEach(node => node.classList.remove(...classNames));
+  }
 }
 
 module.exports = DOMNodeCollection;
