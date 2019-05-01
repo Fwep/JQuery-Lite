@@ -3,9 +3,13 @@ class DOMNodeCollection {
     this.nodes = HTMLEl;
   }
 
+  each(cb) {
+    this.nodes.forEach(cb);
+  }
+
   html(str = null) {
     if (str) {
-      this.nodes.forEach(node => node.innerHTML = `${str}`);
+      this.each(node => node.innerHTML = `${str}`);
       return this.nodes;
     } else {
       return this.nodes[0].innerHTML;
@@ -13,12 +17,12 @@ class DOMNodeCollection {
   }
 
   empty() {
-    this.nodes.forEach(node => node.innerHTML ="");
+    this.each(node => node.innerHTML =""); // Can refactor to this.html('');
   }
 
   append(arg) {
     let args = Array.from(arguments);
-      this.nodes.forEach(node => {
+      this.each(node => {
         args.forEach(insNode => {
           if (insNode instanceof DOMNodeCollection) { 
             // O(this.nodes.length * O(DOMNodCollection.nodes.length))
@@ -62,16 +66,16 @@ class DOMNodeCollection {
   }
 
   addClass(...classNames) {
-    this.nodes.forEach(node => node.classList.add(...classNames));
+    this.each(node => node.classList.add(...classNames));
   }
   
   removeClass(...classNames) {
-    this.nodes.forEach(node => node.classList.remove(...classNames));
+    this.each(node => node.classList.remove(...classNames));
   }
 
   children() {
     let nodeList = [];
-    this.nodes.forEach(node => {
+    this.each(node => {
       Array.from(node.children).forEach(child => nodeList.push(child));
     });
 
@@ -80,8 +84,15 @@ class DOMNodeCollection {
   
   parent() {
     let nodeList = [];
-    this.nodes.forEach(node => {
-      nodeList.push(node.parentNode);
+    this.each(({parentNode}) => { // Destructure parentNode property of each node
+      if (!parentNode.visited) {
+        nodeList.push(parentNode);
+        parentNode.visited = true;
+      }
+    });
+
+    nodeList.forEach(node => {
+      node.visited = false;
     });
   
     return new DOMNodeCollection(nodeList);
@@ -89,7 +100,7 @@ class DOMNodeCollection {
 
   find(selector) {
    let nodeList = [];
-   this.nodes.forEach(node => {
+   this.each(node => {
     let matchedNodes = document.querySelectorAll(selector);
     nodeList = nodeList.concat(Array.from(matchedNodes));
    }) 
@@ -98,7 +109,24 @@ class DOMNodeCollection {
   }
 
   remove() {
-    this.nodes.forEach(node => node.remove());
+    this.each(node => node.remove());
+  }
+
+  on(event, handler) {
+    this.each(node => {
+      node.addEventListener(event, handler);
+      node.event? node.event = [handler] : node.push(handler);
+    });
+  }
+
+  off(event) {
+    this.each(node => {
+      if (node.event) {
+        node.event.forEach(handler => {
+          node.removeEventListener(event, handler);
+        })
+      }
+    });
   }
 }
 
